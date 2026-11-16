@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ShieldSecurity – Propuesta para El Hotelito</title>
+<meta name="description" content="Propuesta de ciberseguridad de ShieldSecurity para El Hotelito.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --papel:#ffffff;
+  --tinta:#1a1a1a;
+  --gris:#5e5e5a;
+  --linea:#dcdcd6;
+  --suelo:#f2f3f1;
+  --naranja:#ff4f1a;
+  --naranja-txt:#c8380a;
+  --naranja-claro:#ffe8df;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--papel);color:var(--tinta);font-family:'Source Serif 4',Georgia,serif;font-size:18px;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Space Grotesk',system-ui,sans-serif;font-weight:700;color:var(--tinta)}
+p{margin:0 0 1em}
+a{color:var(--tinta);text-decoration-color:var(--naranja);text-decoration-thickness:2px;text-underline-offset:3px}
+a:focus-visible,button:focus-visible{outline:3px solid var(--naranja);outline-offset:3px}
+.contenedor{max-width:1180px;margin:0 auto;padding:0 24px}
+.hueco{font-family:'Space Grotesk',sans-serif;color:var(--gris);border-bottom:2px dotted var(--gris)}
+
+/* Cabecera */
+.cabecera{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.96);border-bottom:1px solid var(--linea)}
+.cabecera .contenedor{display:flex;align-items:center;justify-content:space-between;gap:24px;height:68px}
+.marca{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+.marca svg{width:26px;height:31px}
+.marca span{font-family:'Space Grotesk',sans-serif;font-size:20px;letter-spacing:-.02em;line-height:1}
+.marca b{font-weight:700}
+.nav{display:flex;gap:22px;overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{font-family:'Space Grotesk',sans-serif;font-size:15px;text-decoration:none;white-space:nowrap;padding:6px 0;border-bottom:2px solid transparent}
+.nav a:hover{border-bottom-color:var(--naranja)}
+.nav a.nav-contratar{font-weight:700}
+
+/* Portada */
+.portada{padding:64px 0 88px}
+.portada-texto{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px 56px;align-items:end}
+.portada-texto h1,.portada-texto .para-quien{grid-column:1 / -1}
+.portada-texto h1{margin-bottom:12px}
+.para-quien{font-family:'Space Grotesk',sans-serif;font-size:16px;color:var(--gris);margin:0 0 20px}
+h1{font-size:clamp(44px,6vw,80px);line-height:.98;letter-spacing:-.03em;margin:0}
+.linea-h1{display:block}
+.entradilla{font-size:21px;line-height:1.55;margin:0;max-width:44ch}
+.portada-texto .botones{justify-content:flex-end;align-self:end}
+.botones{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-block;font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:16px;line-height:1;padding:15px 20px;border-radius:4px;border:2px solid var(--tinta);text-decoration:none;cursor:pointer;background:transparent;color:var(--tinta)}
+.btn-principal{background:var(--naranja);border-color:var(--naranja)}
+.btn-principal:hover{background:#ff6a3d;border-color:#ff6a3d}
+.btn-secundario:hover{background:var(--suelo)}
+
+.plano-zona{display:grid;grid-template-columns:7fr 5fr;gap:40px;margin-top:64px;align-items:start}
+.plano svg{display:block;width:100%;height:auto}
+.plano-pie{display:flex;justify-content:space-between;align-items:center;gap:12px 20px;flex-wrap:wrap;margin-top:14px;font-family:'Space Grotesk',sans-serif;font-size:15px;color:var(--gris)}
+.plano-pie p{margin:0}
+.btn-internet{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:500;padding:9px 14px;border:2px dashed var(--tinta);border-radius:4px;background:#fff;color:var(--tinta);cursor:pointer}
+.btn-internet:hover{background:var(--suelo)}
+.btn-internet[aria-pressed="true"]{background:var(--naranja-claro);border-style:solid;border-color:var(--naranja)}
+
+.panel{background:var(--suelo);padding:28px 30px 12px;min-height:100%}
+.panel h3{font-size:30px;line-height:1.1;letter-spacing:-.02em;margin:0 0 8px}
+.panel .que-hay{color:var(--gris);margin:0 0 22px}
+.panel h4{font-size:16px;margin:0 0 6px}
+.panel ul{margin:0 0 22px;padding-left:22px}
+.panel li{margin-bottom:6px}
+.panel .riesgos li::marker{color:var(--naranja)}
+.panel .hacemos{list-style:none;padding-left:0}
+.panel .hacemos li{position:relative;padding-left:26px}
+.panel .hacemos li::before{content:"";position:absolute;left:2px;top:.55em;width:12px;height:7px;border-left:3px solid var(--tinta);border-bottom:3px solid var(--tinta);transform:rotate(-45deg)}
+
+/* Plano SVG */
+.room{cursor:pointer;outline:none}
+.room-fill{fill:#fff;transition:fill .15s}
+.room:hover .room-fill{fill:var(--suelo)}
+.room.activa .room-fill{fill:url(#rayado)}
+.anillo{fill:none;stroke:var(--naranja);stroke-width:3;stroke-dasharray:7 5;opacity:0}
+.room:focus-visible .anillo{opacity:1}
+.mueble{fill:none;stroke:#b5b5ae;stroke-width:2}
+.muro{fill:none;stroke:var(--tinta);stroke-width:5}
+.muro-ext{fill:none;stroke:var(--tinta);stroke-width:9}
+.hueco-puerta{stroke:#fff;stroke-width:12}
+.hoja{stroke:var(--tinta);stroke-width:2.5}
+.arco{fill:none;stroke:#9a9a94;stroke-width:1.5;stroke-dasharray:4 4}
+.rotulo{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:500;fill:var(--tinta);pointer-events:none;paint-order:stroke;stroke:#fff;stroke-width:5px;stroke-linejoin:round}
+.estado{font-family:'Space Grotesk',sans-serif;font-size:16px;fill:var(--gris);paint-order:stroke;stroke:#fff;stroke-width:5px;stroke-linejoin:round}
+.entrada{font-family:'Space Grotesk',sans-serif;font-size:15px;fill:var(--gris)}
+.nota{font-family:'Caveat',cursive;font-size:30px;font-weight:700;fill:var(--naranja-txt);paint-order:stroke;stroke:#fff;stroke-width:6px;stroke-linejoin:round;pointer-events:none}
+.trazo{fill:none;stroke:var(--naranja-txt);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.anim .nota{opacity:0;animation:aparece .45s ease forwards}
+.anim .trazo{stroke-dasharray:240;stroke-dashoffset:240;animation:dibuja .7s ease forwards}
+@keyframes aparece{to{opacity:1}}
+@keyframes dibuja{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){.anim .nota{opacity:1;animation:none}.anim .trazo{stroke-dashoffset:0;animation:none}}
+
+/* Bloques */
+.bloque{padding:104px 0}
+.bloque-gris{background:var(--suelo)}
+h2{font-size:clamp(32px,4vw,52px);line-height:1.04;letter-spacing:-.025em;margin:0 0 20px;max-width:18ch}
+.intro{font-size:20px;max-width:58ch;margin:0 0 56px}
+h3{font-size:24px;line-height:1.2;letter-spacing:-.01em;margin:0 0 12px}
+
+.casos{display:grid;grid-template-columns:1fr 1fr;gap:72px}
+.caso p{max-width:56ch}
+.caso .en-hotelito{margin-top:20px}
+.caso .en-hotelito b{font-family:'Space Grotesk',sans-serif}
+
+.pilares{display:grid;grid-template-columns:repeat(3,1fr);gap:48px}
+.pilar-cabeza{display:flex;align-items:center;gap:14px;border-bottom:3px solid var(--tinta);padding-bottom:16px}
+.pilar-cabeza svg{width:34px;height:34px;flex-shrink:0;fill:none;stroke:var(--tinta);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pilar-cabeza h3{margin:0;font-size:26px}
+.pilar-cabeza p{margin:0;font-family:'Space Grotesk',sans-serif;font-size:15px;color:var(--gris);line-height:1.3}
+.medidas{list-style:none;margin:0;padding:0}
+.medidas li{padding:18px 0;border-bottom:1px solid var(--linea)}
+.medidas strong{display:block;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;line-height:1.3;margin-bottom:4px}
+.medidas span{color:var(--gris);font-size:17px;line-height:1.5}
+.aparte{margin-top:56px;max-width:68ch;font-size:19px}
+.aparte b{font-family:'Space Grotesk',sans-serif}
+
+.camaras-grid{display:grid;grid-template-columns:5fr 7fr;gap:56px;align-items:start}
+.reglas{list-style:none;margin:0 0 36px;padding:0;counter-reset:none}
+.reglas li{padding:14px 0 14px 34px;border-bottom:1px solid var(--linea);position:relative}
+.reglas li::before{content:"";position:absolute;left:0;top:22px;width:18px;height:18px;background:var(--naranja);clip-path:polygon(0 0,100% 0,100% 55%,50% 100%,0 55%)}
+.sensores h3{font-size:20px}
+.sensores ul{margin:0;padding-left:22px}
+.leyenda{display:flex;flex-wrap:wrap;gap:10px 24px;margin-top:14px;font-family:'Space Grotesk',sans-serif;font-size:14px;color:var(--gris)}
+.leyenda span{display:inline-flex;align-items:center;gap:8px}
+.leyenda svg{width:30px;height:18px}
+
+/* Autodiagnóstico */
+.test{max-width:900px}
+.aviso-test{font-family:'Space Grotesk',sans-serif;font-size:15px;color:var(--gris);margin:-36px 0 40px}
+.grupo h3{font-size:22px;margin:44px 0 4px}
+.grupo:first-child h3{margin-top:0}
+.pregunta{display:grid;grid-template-columns:1fr auto;gap:12px 28px;align-items:center;padding:16px 0;border-bottom:1px solid var(--linea)}
+.pregunta p{margin:0}
+.opciones{display:flex;gap:6px}
+.opciones input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.opciones label{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:500;padding:8px 14px;border:2px solid var(--tinta);border-radius:999px;cursor:pointer;min-width:64px;text-align:center;line-height:1.2;white-space:nowrap;user-select:none}
+.opciones label:hover{background:var(--suelo)}
+.opciones input:checked + label{background:var(--tinta);color:#fff}
+.opciones input:focus-visible + label{outline:3px solid var(--naranja);outline-offset:2px}
+.test-acciones{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:36px}
+.test-acciones p{margin:0;font-family:'Space Grotesk',sans-serif;font-size:15px;color:var(--gris)}
+.resultado{margin-top:40px;padding:36px;background:#fff;border:3px solid var(--tinta)}
+.resultado h3{font-size:32px;letter-spacing:-.02em;margin:0 0 8px}
+.medidor{display:flex;flex-wrap:wrap;gap:6px;margin:20px 0 10px}
+.medidor span{width:30px;height:30px;border:2px solid var(--tinta)}
+.medidor span.si{background:var(--tinta)}
+.medidor-txt{font-family:'Space Grotesk',sans-serif;font-size:15px;color:var(--gris);margin-bottom:24px}
+.arreglos{margin:0;padding-left:22px}
+.arreglos li{margin-bottom:8px}
+.arreglos li::marker{color:var(--naranja)}
+
+/* Quiénes somos */
+.nosotros{padding:88px 0;border-top:1px solid var(--linea)}
+.nosotros-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:start}
+.nosotros .intro{margin-bottom:0}
+.porque-grande{list-style:none;margin:0;padding:0}
+.porque-grande li{padding:16px 0 16px 34px;border-bottom:1px solid var(--linea);position:relative}
+.porque-grande li:first-child{padding-top:4px}
+.porque-grande li::before{content:"";position:absolute;left:0;top:22px;width:18px;height:18px;background:var(--naranja);clip-path:polygon(0 0,100% 0,100% 55%,50% 100%,0 55%)}
+.porque-grande li:first-child::before{top:10px}
+.porque-grande strong{display:block;font-family:'Space Grotesk',sans-serif;font-size:19px}
+.porque-grande span{color:var(--gris)}
+
+/* Equipo */
+.equipo{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.figuras{display:flex;gap:8px}
+.persona{background:#fff;border:2px solid var(--tinta);border-radius:4px;padding:20px 20px 22px;display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.persona svg{display:block}
+.persona h3{margin:0;font-size:24px}
+.persona .area{margin:0 0 8px;font-family:'Space Grotesk',sans-serif;font-size:15px;color:var(--naranja-txt);font-weight:500}
+.persona .riesgo{margin:0 0 10px;font-size:16px;line-height:1.45}
+.persona .riesgo b{font-family:'Space Grotesk',sans-serif}
+.persona a{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:500}
+
+/* Formación */
+.regla{background:var(--tinta);color:#fff;padding:72px 0}
+.regla .grande{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,3.8vw,50px);line-height:1.08;letter-spacing:-.02em;margin:0;max-width:22ch}
+.regla .peq{color:#d2d2cc;margin:20px 0 0;max-width:60ch}
+.regla b{color:#fff;font-family:'Space Grotesk',sans-serif}
+.formacion-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+.pasos{list-style:none;margin:0;padding:0;counter-reset:paso}
+.pasos li{counter-increment:paso;display:grid;grid-template-columns:52px 1fr;gap:14px;padding:22px 0;border-bottom:1px solid var(--linea)}
+.pasos li:first-child{padding-top:0}
+.pasos li::before{content:counter(paso);font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:44px;line-height:.9;color:var(--naranja)}
+.pasos strong{display:block;font-family:'Space Grotesk',sans-serif;font-size:19px;margin-bottom:2px}
+.pasos span{color:var(--gris)}
+.video{aspect-ratio:16/9;background:var(--tinta);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;border-radius:4px;text-align:center;padding:24px}
+.video svg{width:64px;height:64px}
+.video p{margin:0;font-family:'Space Grotesk',sans-serif;font-size:16px;color:#d2d2cc}
+.pasos-fila{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 40px}
+.pasos-fila li,.pasos-fila li:first-child{padding:22px 0;border-bottom:0;border-top:2px solid var(--tinta)}
+.material{margin-top:88px}
+.material-cab{max-width:62ch;margin-bottom:28px}
+.material h3{font-size:30px;letter-spacing:-.02em;margin:0 0 8px}
+.material-cab p{color:var(--gris);margin:0}
+.video-zona{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,1fr);gap:32px;align-items:start}
+.video-marco{position:relative}
+.video-real{display:block;width:100%;aspect-ratio:16/9;background:#f3f0ea;border:2px solid var(--tinta);border-radius:4px}
+.video-play{position:absolute;right:7%;top:24%;display:flex;align-items:center;gap:14px;padding:14px 26px 14px 16px;border:0;border-radius:999px;background:var(--naranja);color:var(--tinta);font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;cursor:pointer;box-shadow:0 6px 0 var(--tinta)}
+.video-play svg{width:40px;height:40px;background:var(--tinta);color:#fff;border-radius:50%;padding:4px}
+.video-play:hover{background:#ff6a3d}
+.video-play[hidden]{display:none}
+.capitulos-tit{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--naranja-txt);margin:0 0 8px}
+.capitulos ol{list-style:none;margin:0 0 18px;padding:0}
+.cap{display:flex;gap:14px;width:100%;padding:10px 0;border:0;border-bottom:1px solid var(--linea);background:none;font-family:'Space Grotesk',sans-serif;font-size:16px;text-align:left;cursor:pointer;color:var(--tinta)}
+.cap:hover{color:var(--naranja-txt)}
+.cap-t{min-width:40px;color:var(--gris);font-variant-numeric:tabular-nums}
+.cap.activo{font-weight:700}
+.cap.activo .cap-t{color:var(--naranja-txt)}
+.enlace-descarga{font-family:'Space Grotesk',sans-serif;font-size:15px}
+.cartel-zona{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:56px;align-items:center;background:var(--suelo);padding:40px}
+.cartel-img,.ficha-ver{display:block;padding:0;border:0;background:none;cursor:zoom-in;width:100%}
+.cartel-img img,.ficha-ver img{display:block;width:100%;height:auto;border:2px solid var(--tinta);border-radius:3px;background:#fff;transition:transform .15s}
+.cartel-img:hover img,.ficha-ver:hover img{transform:translateY(-4px)}
+.etiqueta{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:500;color:var(--naranja-txt);margin:0 0 6px}
+.cartel-lista{margin:0 0 26px;padding-left:20px}
+.cartel-lista li::marker{color:var(--naranja)}
+.fichas{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:24px}
+.ficha h4{font-size:19px;margin:14px 0 4px}
+.ficha p{font-size:15px;line-height:1.45;color:var(--gris);margin:0 0 10px}
+.ficha-links{display:flex;gap:16px;font-family:'Space Grotesk',sans-serif;font-size:15px}
+.enlace{padding:0;border:0;background:none;font:inherit;color:var(--tinta);text-decoration:underline;text-decoration-color:var(--naranja);text-decoration-thickness:2px;text-underline-offset:3px;cursor:pointer}
+.visor{width:min(820px,94vw);max-height:94vh;padding:0;border:2px solid var(--tinta);border-radius:6px;background:#fff}
+.visor::backdrop{background:rgba(20,20,20,.72)}
+.visor-barra{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px;background:#fff;border-bottom:1px solid var(--linea)}
+.visor-barra p{margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700}
+.visor-acciones{display:flex;gap:8px;flex-wrap:wrap}
+.visor-btn{font-family:'Space Grotesk',sans-serif;font-size:15px;padding:8px 12px;border:2px solid var(--tinta);border-radius:4px;background:#fff;color:var(--tinta);text-decoration:none;cursor:pointer;line-height:1}
+.visor-btn:hover{background:var(--suelo)}
+.visor-pdf{background:var(--naranja);border-color:var(--naranja)}
+.visor-cuerpo{padding:16px;background:var(--suelo)}
+.visor-cuerpo img{display:block;max-width:100%;max-height:calc(94vh - 104px);width:auto;height:auto;margin:0 auto;background:#fff}
+
+/* Servicio completo */
+.completo-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+.incluye{margin:0;padding-left:22px}
+.incluye li{margin-bottom:10px}
+.incluye li::marker{color:var(--naranja)}
+.fases{list-style:none;margin:0;padding:0}
+.fase{display:grid;grid-template-columns:150px 1fr;gap:16px;padding:20px 0;border-bottom:1px solid var(--linea)}
+.fase:first-child{padding-top:0}
+.fase .cuando{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;line-height:1.3;color:var(--tinta)}
+.fase strong{display:block;font-family:'Space Grotesk',sans-serif;font-size:18px}
+.fase span{color:var(--gris)}
+.analisis{margin-top:88px}
+.analisis h3{font-size:30px;letter-spacing:-.02em;margin:0 0 8px}
+.analisis-intro{color:var(--gris);max-width:70ch;margin:0 0 24px}
+.analisis-intro b{color:var(--tinta)}
+.tabla-scroll{overflow-x:auto}
+.tabla-riesgos{width:100%;min-width:760px;border-collapse:collapse;font-size:16px;line-height:1.4}
+.tabla-riesgos th,.tabla-riesgos td{text-align:left;vertical-align:top;padding:14px 18px 14px 0;border-top:2px solid var(--tinta)}
+.tabla-riesgos thead th{border-top:0;font-family:'Space Grotesk',sans-serif;font-size:14px;text-transform:uppercase;letter-spacing:.05em;color:var(--naranja-txt);padding-bottom:10px}
+.tabla-riesgos thead th span{display:block;text-transform:none;letter-spacing:0;font-weight:400;color:var(--gris)}
+.tabla-riesgos tbody th{font-family:'Space Grotesk',sans-serif;font-size:18px;width:22%}
+.tabla-riesgos tbody th span{display:block;font-family:'Source Serif 4',Georgia,serif;font-weight:400;font-size:14px;color:var(--gris);margin-top:2px}
+.tabla-riesgos td.medida{font-weight:600}
+.analisis-pie{font-family:'Space Grotesk',sans-serif;font-size:15px;margin:20px 0 0}
+.contacto{display:grid;grid-template-columns:1fr 1fr;gap:64px;margin-top:96px;padding-top:56px;border-top:3px solid var(--tinta)}
+.contacto h2{margin-bottom:16px}
+.datos-contacto{font-family:'Space Grotesk',sans-serif;font-size:18px;line-height:1.9;margin-top:24px}
+.porque{margin:16px 0 0;padding-left:22px}
+.porque li{margin-bottom:6px}
+.porque li::marker{color:var(--naranja)}
+
+.pie{border-top:1px solid var(--linea);padding:28px 0 40px;font-family:'Space Grotesk',sans-serif;font-size:14px;color:var(--gris)}
+.pie .contenedor{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+
+@media (max-width:980px){
+  .nosotros-grid{grid-template-columns:1fr;gap:32px}
+  .equipo{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .fichas{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .video-zona,.cartel-zona{grid-template-columns:1fr}
+  .cartel-zona{padding:24px}
+  .cartel-img{max-width:360px}
+  .pasos-fila{grid-template-columns:1fr}
+  .portada-texto .botones{justify-content:flex-start}
+  .portada-texto,.plano-zona,.casos,.camaras-grid,.formacion-grid,.completo-grid,.contacto{grid-template-columns:1fr;gap:40px}
+  .pilares{grid-template-columns:1fr;gap:40px}
+  .portada{padding-top:48px}
+  .bloque{padding:72px 0}
+}
+@media (max-width:640px){
+  .fichas{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+  .video-play span{display:none}
+  .video-play{padding:12px}
+  .equipo{grid-template-columns:1fr}
+  .fichas{grid-template-columns:repeat(2,minmax(0,1fr))}
+  body{font-size:17px}
+  .cabecera .contenedor{height:auto;flex-wrap:wrap;gap:4px 0;padding-top:12px}
+  .nav{width:100%;gap:18px;padding-bottom:4px}
+  html{scroll-padding-top:110px}
+  .pregunta{grid-template-columns:1fr}
+  .plano .nota,.plano .trazo{display:none}
+  .rotulo{font-size:22px}
+  .estado{font-size:19px}
+  .panel{padding:24px 20px 8px}
+  .fase{grid-template-columns:1fr;gap:4px}
+  .resultado{padding:24px}
+}
+</style>
+</head>
+<body>
+
+<!-- Patrones y símbolos compartidos por los planos -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <pattern id="rayado" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="12" height="12" fill="#fff1eb"/>
+      <line x1="0" y1="0" x2="0" y2="12" stroke="#ff4f1a" stroke-width="2"/>
+    </pattern>
+    <pattern id="prohibido" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
+      <rect width="10" height="10" fill="#f2f3f1"/>
+      <line x1="0" y1="0" x2="0" y2="10" stroke="#cfcfc9" stroke-width="2"/>
+    </pattern>
+    <symbol id="camara" viewBox="0 0 34 16">
+      <rect x="0" y="1" width="22" height="14" rx="2" fill="#1a1a1a"/>
+      <path d="M22 5 L34 0 V16 L22 11 Z" fill="#1a1a1a"/>
+    </symbol>
+    <symbol id="sensor" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" fill="#fff" stroke="#1a1a1a" stroke-width="2.5"/>
+      <circle cx="12" cy="12" r="3.5" fill="#ff4f1a"/>
+    </symbol>
+    <clipPath id="corteLogo"><path d="M10 8 H90 V58 C90 88 72 106 50 114 C28 106 10 88 10 58 Z"/></clipPath>
+  </defs>
+</svg>
+
+<header class="cabecera">
+  <div class="contenedor">
+    <a class="marca" href="#inicio" aria-label="ShieldSecurity, inicio">
+      <svg viewBox="0 0 100 120" aria-hidden="true">
+        <path d="M10 8 H90 V58 C90 88 72 106 50 114 C28 106 10 88 10 58 Z" fill="#1a1a1a"/>
+        <path d="M0 86 L100 46" stroke="#ff4f1a" stroke-width="12" clip-path="url(#corteLogo)"/>
+      </svg>
+      <span><b>Shield</b>Security</span>
+    </a>
+    <nav class="nav" aria-label="Secciones">
+      <a href="#nosotros">Quiénes somos</a>
+      <a href="#plano">El hotel</a>
+      <a href="#propuesta">La propuesta</a>
+      <a href="#camaras">Cámaras</a>
+      <a href="#autodiagnostico">Autodiagnóstico</a>
+      <a href="#formacion">Formación</a>
+      <a href="#contratar" class="nav-contratar">Contratar</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inicio">
+
+  <section class="portada">
+    <div class="contenedor">
+      <div class="portada-texto">
+        <p class="para-quien">Propuesta de ciberseguridad para El Hotelito</p>
+        <h1><span class="linea-h1">El Hotelito es pequeño.</span> <span class="linea-h1">Lo que guarda, no.</span></h1>
+        <p class="entradilla">DNI de huéspedes, pagos, fotos de niños, la cuenta de Booking. Os proponemos protegerlo todo con medidas sencillas, sin cambiar vuestra forma de trabajar.</p>
+        <div class="botones">
+          <a class="btn btn-principal" href="#autodiagnostico">Haz el autodiagnóstico</a>
+          <a class="btn btn-secundario" href="#propuesta">Ver la propuesta</a>
+        </div>
+      </div>
+
+      <div class="plano-zona" id="plano">
+        <div>
+          <div class="plano">
+            <svg id="plano-hotel" class="anim" viewBox="0 -30 900 640" role="group" aria-label="Plano de El Hotelito. Elige una zona para ver sus riesgos."></svg>
+          </div>
+          <div class="plano-pie">
+            <p>Plano de El Hotelito. Toca una zona.</p>
+            <button type="button" class="btn-internet" id="btn-internet" aria-pressed="false">Fuera del plano: internet y redes</button>
+          </div>
+        </div>
+        <div class="panel" id="panel" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloque nosotros" id="nosotros">
+    <div class="contenedor nosotros-grid">
+      <div>
+        <h2>Somos vuestro departamento de informática</h2>
+        <p class="intro">ShieldSecurity está especializada en la ciberseguridad de hoteles y alojamientos pequeños. No necesitáis contratar a ningún informático: lo hacemos nosotros.</p>
+      </div>
+      <ul class="porque-grande">
+        <li><strong>Solo alojamientos pequeños</strong><span>Conocemos vuestro día a día: reservas, llaves, huéspedes y redes.</span></li>
+        <li><strong>Sin tecnicismos</strong><span>Os lo explicamos claro y nos encargamos de la parte técnica.</span></li>
+        <li><strong>Dentro de la ley</strong><span>Protección de datos, cámaras y registro de viajeros, en regla.</span></li>
+        <li><strong>Siempre cerca</strong><span>Revisión cada mes y disponibles para lo que haga falta.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="bloque bloque-gris" id="casos">
+    <div class="contenedor">
+      <h2>Esto ya les ha pasado a otros hoteles</h2>
+      <p class="intro">No son ataques de película. Son trucos sencillos que funcionan porque el hotel está ocupado atendiendo a sus clientes.</p>
+      <div class="casos">
+        <article class="caso">
+          <h3>El correo de Booking que no era de Booking</h3>
+          <p>Desde finales de 2024, muchos hoteles europeos reciben correos que imitan a Booking: la queja de un cliente, una reserva que revisar. El enlace lleva a una web que pide al empleado «arreglar» un error copiando un comando en su ordenador. Así se instala un programa que roba la cuenta del hotel, y con ella los estafadores escriben a los huéspedes pidiéndoles pagos.</p>
+          <p class="en-hotelito"><b>En El Hotelito:</b> código en el móvil para entrar en Booking y una regla para todo el equipo: nunca se instala nada que pida un correo.</p>
+        </article>
+        <article class="caso">
+          <h3>Cerraduras que se abrían con una tarjeta copiada</h3>
+          <p>En 2024 se demostró que un modelo de cerradura de tarjeta muy usado en hoteles se podía abrir copiando cualquier tarjeta del propio hotel, incluso una caducada. Afectaba a más de tres millones de puertas en todo el mundo, y arreglarlo obligaba a actualizar cerradura por cerradura.</p>
+          <p class="en-hotelito"><b>En El Hotelito:</b> hoy tenéis llaves de toda la vida. Si algún día las cambiáis por tarjetas, o ponéis cámaras o sensores, comprobamos antes que el modelo no tenga fallos conocidos y que el fabricante lo siga actualizando.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloque" id="propuesta">
+    <div class="contenedor">
+      <h2>Doce medidas para empezar</h2>
+      <p class="intro">Repartidas en lo que se toca, lo que se instala y lo que se guarda. Ninguna exige saber de informática: de la parte técnica nos encargamos nosotros.</p>
+      <div class="pilares">
+        <div class="pilar">
+          <div class="pilar-cabeza">
+            <svg viewBox="0 0 34 34" aria-hidden="true"><rect x="3" y="5" width="28" height="18" rx="2"/><path d="M12 29 H22 M17 23 V29"/></svg>
+            <div><h3>Hardware</h3><p>Los aparatos</p></div>
+          </div>
+          <ul class="medidas">
+            <li><strong>Tres wifis separadas</strong><span>Una para clientes, otra para el hotel y otra para cámaras y sensores.</span></li>
+            <li><strong>Batería e internet de reserva</strong><span>Si se va la luz o se cae la línea, recepción sigue funcionando.</span></li>
+            <li><strong>Un router con contraseña propia</strong><span>Fuera la que trae de fábrica, y con la protección más actual.</span></li>
+            <li><strong>Pantallas que se bloquean</strong><span>Cada vez que alguien se levanta del puesto.</span></li>
+          </ul>
+        </div>
+        <div class="pilar">
+          <div class="pilar-cabeza">
+            <svg viewBox="0 0 34 34" aria-hidden="true"><rect x="3" y="5" width="28" height="24" rx="2"/><path d="M3 11 H31 M13 17 L10 20 L13 23 M21 17 L24 20 L21 23"/></svg>
+            <div><h3>Software</h3><p>Los programas y las cuentas</p></div>
+          </div>
+          <ul class="medidas">
+            <li><strong>Actualizaciones automáticas</strong><span>En ordenadores, móviles, router, cámaras y sensores.</span></li>
+            <li><strong>Una caja fuerte para las contraseñas</strong><span>Un programa que las guarda todas: cada persona con su usuario y ninguna en un pósit.</span></li>
+            <li><strong>Código en el móvil</strong><span>Para entrar en el correo, Booking, las redes sociales y el banco.</span></li>
+            <li><strong>Ordenadores blindados</strong><span>Con antivirus y protegidos por dentro: si alguien roba el portátil, no puede leer nada.</span></li>
+          </ul>
+        </div>
+        <div class="pilar">
+          <div class="pilar-cabeza">
+            <svg viewBox="0 0 34 34" aria-hidden="true"><path d="M4 9 V27 A2 2 0 0 0 6 29 H28 A2 2 0 0 0 30 27 V12 A2 2 0 0 0 28 10 H16 L13 6 H6 A2 2 0 0 0 4 8 Z"/><rect x="13" y="18" width="8" height="6" rx="1"/><path d="M14.5 18 V16 A2.5 2.5 0 0 1 19.5 16 V18"/></svg>
+            <div><h3>Datos</h3><p>Lo que se guarda</p></div>
+          </div>
+          <ul class="medidas">
+            <li><strong>Copias de seguridad</strong><span>Una en la nube y otra desconectada, y cada mes se comprueba que funcionan.</span></li>
+            <li><strong>DNI y registro de viajeros</strong><span>Sin fotocopias y enviados a Interior en 24 horas. También se registra a los menores: sus datos los da el adulto que los acompaña.</span></li>
+            <li><strong>Fotos sin caras de niños</strong><span>Salvo permiso escrito de sus padres.</span></li>
+            <li><strong>Redes sociales sin huéspedes</strong><span>Fotos de espacios: ni caras, ni números de habitación, ni quién se aloja.</span></li>
+          </ul>
+        </div>
+      </div>
+      <p class="aparte"><b>Y algo que no haremos:</b> fichar con huella o con la cara. La Agencia de Protección de Datos no lo acepta para controlar el horario, así que usaremos una aplicación o una tarjeta.</p>
+    </div>
+  </section>
+
+  <section class="bloque bloque-gris" id="camaras">
+    <div class="contenedor">
+      <h2>¿Cámaras y sensores? Sí, con cabeza</h2>
+      <p class="intro">Podéis instalarlos sin miedo. Nosotros nos encargamos de que sean seguros y de que cumplan la ley.</p>
+      <div class="camaras-grid">
+        <div>
+          <ul class="reglas">
+            <li>Solo en la entrada y en el pasillo.</li>
+            <li>Nunca en las habitaciones, en el baño ni en las zonas privadas del personal. En la cocina, tampoco hace falta.</li>
+            <li>Cartel a la vista y aviso al equipo antes de encenderlas.</li>
+            <li>Grabaciones protegidas con clave, que se borran a los 30 días y que solo ve dirección.</li>
+            <li>Cámaras y sensores en su propia red, con contraseñas cambiadas.</li>
+          </ul>
+          <div class="sensores">
+            <h3>Sensores que recomendamos</h3>
+            <ul>
+              <li>Humo, en la cocina, el pasillo y recepción.</li>
+              <li>Temperatura de la nevera y del almacén donde está el router.</li>
+              <li>Fugas de agua en el baño.</li>
+              <li>Apertura de la puerta de entrada.</li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <div class="plano">
+            <svg id="plano-camaras" viewBox="0 -30 900 640" role="img" aria-label="Plano con la ubicación de cámaras y sensores: cámaras solo en el pasillo y en la puerta de entrada; nunca en habitaciones ni en el baño."></svg>
+          </div>
+          <div class="leyenda" aria-hidden="true">
+            <span><svg viewBox="0 0 34 16"><use href="#camara"/></svg>Cámara</span>
+            <span><svg viewBox="0 0 30 18"><path d="M0 9 L30 0 V18 Z" fill="#ff4f1a" opacity=".25"/></svg>Zona grabada</span>
+            <span><svg viewBox="0 0 24 24" style="width:20px;height:20px"><use href="#sensor"/></svg>Sensor</span>
+            <span><svg viewBox="0 0 30 18"><rect width="30" height="18" fill="url(#prohibido)" stroke="#cfcfc9"/></svg>Prohibido grabar</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloque" id="autodiagnostico">
+    <div class="contenedor">
+      <h2>¿Cómo está el hotel ahora mismo?</h2>
+      <p class="intro">Doce preguntas, dos minutos. Al terminar verás qué arreglaríamos primero.</p>
+      <p class="aviso-test">Las respuestas no se envían a ningún sitio: solo las ves tú.</p>
+      <form class="test" id="test" novalidate>
+        <div id="preguntas"></div>
+        <div class="test-acciones">
+          <button type="submit" class="btn btn-principal">Ver mi resultado</button>
+          <button type="button" class="btn btn-secundario" id="reiniciar">Empezar de nuevo</button>
+          <p id="contador">0 de 12 respondidas</p>
+        </div>
+        <div class="resultado" id="resultado" hidden tabindex="-1"></div>
+      </form>
+    </div>
+  </section>
+
+  <section class="regla" aria-label="La regla de oro">
+    <div class="contenedor">
+      <p class="grande">Si un mensaje te mete prisa, para y compruébalo por otro camino.</p>
+      <p class="peq">Un correo, un SMS o una llamada que pide datos, pagos o instalar algo «ya mismo» es la forma más habitual de engañar a un hotel. Si pasa algo, desconecta y avisa a dirección: dirección nos llama y nos encargamos. Si no nos localizáis, el <b>017</b> de INCIBE es gratuito y confidencial.</p>
+    </div>
+  </section>
+
+  <section class="bloque" id="formacion">
+    <div class="contenedor">
+      <h2>Un equipo que sabe qué hacer</h2>
+      <p class="intro">La mayoría de los ataques empiezan por una persona con prisa. Por eso la formación es parte de la propuesta, no un extra.</p>
+      <ol class="pasos pasos-fila">
+        <li><div><strong>El primer día</strong><span>Cada persona que entra a trabajar ve el vídeo de bienvenida antes de empezar. Dura tres minutos y acaba con un pequeño test.</span></div></li>
+        <li><div><strong>Siempre a la vista</strong><span>El cartel común en la sala del personal y una ficha propia para cada área.</span></div></li>
+        <li><div><strong>Cada tres meses</strong><span>Un simulacro con un correo falso y un repaso de diez minutos con todo el equipo.</span></div></li>
+      </ol>
+
+      <div class="material" id="video">
+        <div class="material-cab"><h3>El vídeo de bienvenida</h3><p>Obligatorio para cualquiera que empiece a trabajar en el hotel. Cada área tiene su parte, y al final hay tres preguntas para comprobar que ha quedado claro.</p></div>
+        <div class="video-zona">
+          <div class="video-marco">
+            <video id="videoFormacion" class="video-real" controls preload="metadata" poster="video/portada.jpg" src="video/video_formacion_hotelito.mp4">
+              Tu navegador no puede reproducir el vídeo. <a href="video/video_formacion_hotelito.mp4">Descárgalo aquí</a>.
+            </video>
+            <button type="button" class="video-play" id="videoPlay" aria-label="Reproducir el vídeo de bienvenida"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M14 10 L31 20 L14 30 Z" fill="currentColor"/></svg><span>Ver el vídeo</span></button>
+          </div>
+          <div class="capitulos">
+            <p class="capitulos-tit">Ir a cada parte</p>
+            <ol><li><button type="button" class="cap" data-t="0"><span class="cap-t">0:00</span>Bienvenida</button></li><li><button type="button" class="cap" data-t="9.87"><span class="cap-t">0:10</span>Recepción</button></li><li><button type="button" class="cap" data-t="50.1"><span class="cap-t">0:50</span>Limpieza</button></li><li><button type="button" class="cap" data-t="73.17"><span class="cap-t">1:13</span>Redes sociales</button></li><li><button type="button" class="cap" data-t="94.6"><span class="cap-t">1:35</span>Administración</button></li><li><button type="button" class="cap" data-t="106.7"><span class="cap-t">1:47</span>Todo el equipo</button></li><li><button type="button" class="cap" data-t="129.13"><span class="cap-t">2:09</span>Test final</button></li><li><button type="button" class="cap" data-t="174.73"><span class="cap-t">2:55</span>Despedida</button></li></ol>
+            <a class="enlace-descarga" href="video/video_formacion_hotelito.mp4" download>Descargar el vídeo (MP4)</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="material" id="cartel">
+        <div class="cartel-zona">
+          <button type="button" class="cartel-img ficha-ver" data-img="infografias/0_cartel_comun.png" data-pdf="infografias/0_cartel_comun.pdf" data-titulo="Cartel común"><img src="infografias/0_cartel_comun_mini.png" alt="Cartel común: Si te meten prisa, para." loading="lazy" width="400" height="566"></button>
+          <div class="cartel-texto">
+            <p class="etiqueta">Para todo el equipo</p>
+            <h3>El cartel común</h3>
+            <p>Va colgado en la sala del personal. Ocho reglas que valen para cualquier puesto y qué hacer si algo va raro: desconectar y avisar a dirección, que nos llama a nosotros.</p>
+            <ul class="cartel-lista"><li>Contraseñas, llaves y DNI</li><li>Fotos, papeles y objetos olvidados</li><li>Wifi de clientes y del hotel</li></ul>
+            <div class="botones"><button type="button" class="btn btn-secundario ficha-ver-alt" data-ref="cartel">Verlo en grande</button><a class="btn btn-principal" href="infografias/0_cartel_comun.pdf" download>Descargar para imprimir</a></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="material" id="fichas">
+        <div class="material-cab"><h3>Una ficha por puesto</h3><p>Cada puesto tiene sus propios riesgos. Por eso cada área tiene su ficha, con cinco reglas y «lo que nunca». Valen para cualquiera que ocupe ese puesto: se imprimen en A4 y se dejan donde se trabaja.</p></div>
+        <ul class="fichas"><li class="ficha"><button type="button" class="ficha-ver" data-img="infografias/1_ficha_recepcion.png" data-pdf="infografias/1_ficha_recepcion.pdf" data-titulo="Ficha de recepción"><img src="infografias/1_ficha_recepcion_mini.png" alt="Ficha de Recepción" loading="lazy" width="400" height="566"></button><h4>Recepción</h4><p>Correos falsos, llamadas de noche, DNI y llaves.</p><div class="ficha-links"><button type="button" class="enlace ficha-ver-txt">Ver</button><a href="infografias/1_ficha_recepcion.pdf" download>Descargar PDF</a></div></li><li class="ficha"><button type="button" class="ficha-ver" data-img="infografias/2_ficha_limpieza.png" data-pdf="infografias/2_ficha_limpieza.pdf" data-titulo="Ficha de limpieza"><img src="infografias/2_ficha_limpieza_mini.png" alt="Ficha de Limpieza" loading="lazy" width="400" height="566"></button><h4>Limpieza</h4><p>Llave maestra, objetos olvidados y papeles con nombres.</p><div class="ficha-links"><button type="button" class="enlace ficha-ver-txt">Ver</button><a href="infografias/2_ficha_limpieza.pdf" download>Descargar PDF</a></div></li><li class="ficha"><button type="button" class="ficha-ver" data-img="infografias/3_ficha_redes_sociales.png" data-pdf="infografias/3_ficha_redes_sociales.pdf" data-titulo="Ficha de redes sociales"><img src="infografias/3_ficha_redes_sociales_mini.png" alt="Ficha de Redes sociales" loading="lazy" width="400" height="566"></button><h4>Redes sociales</h4><p>Cuentas con código en el móvil y fotos sin huéspedes.</p><div class="ficha-links"><button type="button" class="enlace ficha-ver-txt">Ver</button><a href="infografias/3_ficha_redes_sociales.pdf" download>Descargar PDF</a></div></li><li class="ficha"><button type="button" class="ficha-ver" data-img="infografias/4_ficha_administracion.png" data-pdf="infografias/4_ficha_administracion.pdf" data-titulo="Ficha de administración"><img src="infografias/4_ficha_administracion_mini.png" alt="Ficha de Administración" loading="lazy" width="400" height="566"></button><h4>Administración</h4><p>Facturas falsas y cambios de cuenta bancaria.</p><div class="ficha-links"><button type="button" class="enlace ficha-ver-txt">Ver</button><a href="infografias/4_ficha_administracion.pdf" download>Descargar PDF</a></div></li><li class="ficha"><button type="button" class="ficha-ver" data-img="infografias/5_ficha_direccion.png" data-pdf="infografias/5_ficha_direccion.pdf" data-titulo="Ficha de dirección"><img src="infografias/5_ficha_direccion_mini.png" alt="Ficha de Dirección" loading="lazy" width="400" height="566"></button><h4>Dirección</h4><p>Accesos, pagos grandes, copias y qué hacer si pasa algo.</p><div class="ficha-links"><button type="button" class="enlace ficha-ver-txt">Ver</button><a href="infografias/5_ficha_direccion.pdf" download>Descargar PDF</a></div></li></ul>
+      </div>
+
+      <dialog class="visor" id="visor" aria-labelledby="visorTitulo">
+        <div class="visor-barra">
+          <p id="visorTitulo"></p>
+          <div class="visor-acciones">
+            <button type="button" class="visor-btn" id="visorAnt" aria-label="Anterior">←</button>
+            <button type="button" class="visor-btn" id="visorSig" aria-label="Siguiente">→</button>
+            <a class="visor-btn visor-pdf" id="visorPdf" href="#" download>Descargar PDF</a>
+            <button type="button" class="visor-btn" id="visorCerrar" aria-label="Cerrar">✕</button>
+          </div>
+        </div>
+        <div class="visor-cuerpo"><img id="visorImg" alt=""></div>
+      </dialog>
+    </div>
+  </section>
+
+  <section class="bloque bloque-gris" id="contratar">
+    <div class="contenedor">
+      <h2>Esto es el resumen. El servicio completo va más allá.</h2>
+      <p class="intro">Si nos contratáis, visitamos el hotel, lo revisamos todo y os lo dejamos organizado y por escrito.</p>
+      <div class="completo-grid">
+        <div>
+          <h3>Qué incluye</h3>
+          <ul class="incluye">
+            <li>Visita al hotel y revisión de cada equipo, puerta y cuenta.</li>
+            <li>Configuración de redes, router, copias de seguridad y cifrado.</li>
+            <li>Un plan paso a paso por si hay un ataque o una fuga de datos. Si pasa algo, nos llamáis y nos encargamos, también de hablar con el 017 de INCIBE y con la Agencia de Protección de Datos si hace falta.</li>
+            <li>Un plan para seguir trabajando si se va la luz o internet, con un simulacro al año.</li>
+            <li>Revisión de cámaras, sensores y cerraduras antes de comprarlos.</li>
+            <li>Carteles, avisos al equipo y documentos de protección de datos.</li>
+            <li>Simulacros de correos falsos para comprobar que la formación funciona.</li>
+            <li>Un plan de evacuación sobre el plano: salidas, extintor, cerraduras y una lista de huéspedes que se pueda consultar sin internet.</li>
+            <li>Ayuda para contratar un ciberseguro.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Cómo lo pondríamos en marcha</h3>
+          <ol class="fases">
+            <li class="fase"><span class="cuando">Días 1 a 3</span><div><strong>Lo urgente</strong><span>Contraseñas nuevas, código en el móvil, wifis separadas y la primera copia de seguridad.</span></div></li>
+            <li class="fase"><span class="cuando">Semanas 1 y 2</span><div><strong>Lo importante</strong><span>Actualizaciones, ordenadores protegidos, batería e internet de reserva, y formación de todo el equipo.</span></div></li>
+            <li class="fase"><span class="cuando">Mes 1</span><div><strong>Lo nuevo</strong><span>Cámaras y sensores instalados con seguridad, primer simulacro y plan de evacuación. Desde ahí, revisión cada mes.</span></div></li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="analisis" id="analisis">
+        <h3>El análisis, en una tabla</h3>
+        <p class="analisis-intro">Para quien quiera el detalle. Un <b>riesgo</b> aparece cuando una <b>amenaza</b> (lo que puede pasar) encuentra una <b>vulnerabilidad</b> (un punto débil) en un <b>activo</b> (algo que hay que proteger).</p>
+        <div class="tabla-scroll"><table class="tabla-riesgos">
+          <thead><tr><th scope="col">Qué hay que proteger<span>activo</span></th><th scope="col">Qué puede pasar<span>amenaza</span></th><th scope="col">Por qué hoy es fácil<span>vulnerabilidad</span></th><th scope="col">Qué proponemos<span>medida</span></th></tr></thead>
+          <tbody><tr><th scope="row">Datos de los huéspedes<span>DNI, registro de viajeros (también de menores) y reservas</span></th><td>Que se filtren, se pierdan o los vea quien no debe</td><td>Fotocopias, pantalla a la vista y ninguna copia de seguridad</td><td class="medida">Registro directo al sistema, pantalla girada y copias comprobadas cada mes</td></tr><tr><th scope="row">Cuentas del hotel<span>Booking, correo, redes sociales y banco</span></th><td>Que las roben con un correo falso y estafen a los huéspedes</td><td>Una contraseña compartida y sin código en el móvil</td><td class="medida">Un usuario por persona, gestor de contraseñas y código en el móvil</td></tr><tr><th scope="row">El dinero<span>Pagos a proveedores y cobros</span></th><td>Pagar una factura falsa o a una cuenta cambiada</td><td>Se paga con prisa y sin comprobar</td><td class="medida">Llamar al teléfono de siempre; los pagos grandes los confirma dirección</td></tr><tr><th scope="row">Ordenadores y wifi<span>El ordenador de recepción, el router y la red</span></th><td>Un virus que bloquea el hotel o un extraño dentro de la red</td><td>Una sola wifi para todos, router de fábrica y equipos sin actualizar</td><td class="medida">Tres wifis separadas, router protegido, actualizaciones y antivirus</td></tr><tr><th scope="row">Llaves y habitaciones<span>La llave maestra y las de cada habitación</span></th><td>Que entre quien no debe</td><td>La maestra a la vista y llaves perdidas sin cambiar el bombín</td><td class="medida">Cajetín con código, registro de llaves y nunca abrir por teléfono</td></tr><tr><th scope="row">La imagen del hotel<span>Fotos y redes sociales</span></th><td>Publicar la cara de un niño o de un huésped, y la multa</td><td>Nadie ha dicho qué se puede publicar</td><td class="medida">Fotos de espacios; personas solo con permiso escrito</td></tr></tbody>
+        </table></div>
+        <p class="analisis-pie"><a href="infografias/6_resumen_direccion.pdf" download>Descargar el resumen para dirección (PDF)</a></p>
+      </div>
+
+      <div class="contacto">
+        <div>
+          <h2>¿Empezamos?</h2>
+          <p>Escribidnos y lo vemos con vosotros en el propio hotel.</p>
+          <p class="datos-contacto">Correo: jose.cervera@shieldsecurity.es<br>Teléfono: 600 000 000</p>
+        </div>
+        <div>
+          <h3>José Cervera, ShieldSecurity</h3>
+          <p>Reviso el hotel, lo configuro todo, formo al equipo y sigo ahí después: revisión cada mes y disponible para lo que haga falta. La dirección del hotel tiene mi contacto directo para cualquier duda y para cuando pase algo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pie">
+  <div class="contenedor">
+    <a class="marca" href="#inicio" aria-label="ShieldSecurity, volver arriba">
+      <svg viewBox="0 0 100 120" aria-hidden="true" style="width:20px;height:24px">
+        <path d="M10 8 H90 V58 C90 88 72 106 50 114 C28 106 10 88 10 58 Z" fill="#1a1a1a"/>
+        <path d="M0 86 L100 46" stroke="#ff4f1a" stroke-width="12" clip-path="url(#corteLogo)"/>
+      </svg>
+      <span style="font-size:16px"><b>Shield</b>Security</span>
+    </a>
+    <span>Propuesta preparada para El Hotelito. Noviembre de 2026.</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // ---------- Contenido por zona ----------
+  var ZONAS = {
+    recepcion: {
+      nombre: 'Recepción',
+      hay: 'Mostrador con ordenador, datáfono y teléfono, y una pared de armarios. La puerta es de cristal: desde fuera se ve el interior.',
+      riesgos: ['Un correo falso de «Booking» pide instalar algo para arreglar un error.', 'La contraseña está en un pósit o la usa todo el mundo.', 'Desde la puerta o desde el mostrador se ve la pantalla con los datos de los huéspedes.'],
+      hacemos: ['Usuario propio para cada persona, gestor de contraseñas y código en el móvil.', 'Pantalla girada hacia dentro, con filtro de privacidad y bloqueo automático.', 'Los DNI no se fotocopian: el registro va directo al sistema.']
+    },
+    habitaciones: {
+      nombre: 'Habitaciones 101 y 102',
+      hay: 'Cama, mesita, wifi para los clientes y cerradura de llave. Limpieza entra con la llave maestra.',
+      riesgos: ['Se pierde una llave, o la maestra, y nadie cambia la cerradura.', 'La wifi de los clientes es la misma que usa el hotel.', 'Un huésped se deja un USB o un portátil y alguien lo conecta para ver de quién es.'],
+      hacemos: ['Registro de llaves y cambio de bombín si se pierde una.', 'Wifi de clientes separada de la del hotel.', 'Lo olvidado va a recepción sin encenderlo ni conectarlo.']
+    },
+    cocina: {
+      nombre: 'Cocina',
+      hay: 'Cocina compartida: cada huésped se prepara lo que quiere, a cualquier hora.',
+      riesgos: ['Un fuego de noche y nadie se entera hasta que es tarde.', 'La nevera se estropea y se pierde la comida de los huéspedes.', 'Un cartel con la contraseña de la wifi del hotel, o un código QR falso pegado encima del bueno.'],
+      hacemos: ['Detector de humo conectado que avisa al móvil de dirección.', 'Sensor de temperatura en la nevera.', 'En la cocina solo se anuncia la wifi de clientes, y los QR se revisan.']
+    },
+    banos: {
+      nombre: 'Baño',
+      hay: 'El baño de los huéspedes.',
+      riesgos: ['Un aparato «olvidado» que en realidad está grabando.', 'Una fuga de agua que nadie ve hasta que hay daños.'],
+      hacemos: ['Aquí nunca habrá cámaras ni micrófonos: lo prohíbe la ley.', 'Limpieza revisa que no haya aparatos extraños.', 'Sensor que avisa si hay una fuga de agua.']
+    },
+    almacen: {
+      nombre: 'Almacén',
+      hay: 'Sábanas, toallas, productos de limpieza y la llave maestra cuando no se usa.',
+      riesgos: ['La llave maestra colgada a la vista o puesta en la puerta.', 'Cajas con papeles antiguos de huéspedes sin cerrar.'],
+      hacemos: ['La llave maestra, en un cajetín con código.', 'Los papeles con datos van a la destructora, no al almacén.', 'Puerta siempre cerrada.']
+    },
+    pasillo: {
+      nombre: 'Pasillo',
+      hay: 'Une recepción con el resto del hotel. Junto con la entrada, es el único sitio donde una cámara tiene sentido.',
+      riesgos: ['Una cámara que graba el interior de una habitación cuando se abre la puerta.', 'Grabaciones que puede ver cualquiera.'],
+      hacemos: ['Cámara que solo cubre el paso, con cartel informativo.', 'Grabaciones protegidas con clave que se borran a los 30 días.', 'Detector de humo conectado.']
+    },
+    tecnico: {
+      nombre: 'Almacén con el router',
+      hay: 'El segundo almacén. Proponemos colocar aquí el router, una batería para los cortes de luz y el disco de las copias de seguridad.',
+      riesgos: ['Cualquiera entra y desenchufa el router, o conecta un cable a la red del hotel.', 'Los equipos se calientan o se mojan y se pierde todo.'],
+      hacemos: ['Puerta cerrada con llave: solo entra dirección.', 'Router, batería y disco de copias juntos y ordenados.', 'Sensor de temperatura que avisa si algo va mal.']
+    },
+    internet: {
+      nombre: 'Internet y redes sociales',
+      hay: 'Lo que no sale en el plano: el correo, el panel de Booking, las redes sociales del hotel y el banco.',
+      riesgos: ['Roban la cuenta de Booking y escriben a los huéspedes pidiendo pagos.', 'Se publica una foto con un niño reconocible o con el número de una habitación.', 'Alguien que ya no trabaja en el hotel sigue teniendo la contraseña de Instagram.'],
+      hacemos: ['Código en el móvil además de la contraseña, en todas las cuentas.', 'Fotos de espacios, no de personas: ninguna cara de huéspedes ni de niños sin permiso escrito.', 'Las contraseñas se cambian cuando alguien deja el hotel.']
+    }
+  };
+
+  // ---------- Geometría del plano (según el plano real) ----------
+  var SALAS = [
+    {id:'hab1',    zona:'habitaciones', nombre:'Habitación 102', pts:[[20,20],[256,20],[256,337],[20,337]], rot:[34,300]},
+    {id:'vest',    zona:'almacen',      nombre:'Almacén',      pts:[[256,20],[434,20],[434,270],[256,270]], rot:[270,240]},
+    {id:'hab2',    zona:'habitaciones', nombre:'Habitación 101', pts:[[434,20],[618,20],[618,270],[434,270]], rot:[448,208]},
+    {id:'recep',   zona:'recepcion',    nombre:'Recepción',      pts:[[618,20],[880,20],[880,426],[618,426]], rot:[634,404]},
+    {id:'pasillo', zona:'pasillo',      nombre:'Pasillo',        pts:[[256,270],[618,270],[618,337],[434,337],[434,420],[256,420]], rot:[276,312]},
+    {id:'cocina',  zona:'cocina',       nombre:'Cocina',         pts:[[20,337],[256,337],[256,580],[20,580]], rot:[100,372]},
+    {id:'bano',    zona:'banos',        nombre:'Baño',           pts:[[256,420],[434,420],[434,580],[256,580]], rot:[348,452]},
+    {id:'tec',     zona:'tecnico',      nombre:'Almacén', pts:[[434,337],[618,337],[618,580],[434,580]], rot:[448,412]}
+  ];
+  var EXTERIOR = [[20,20],[880,20],[880,426],[618,426],[618,580],[20,580]];
+  var PUERTAS = [
+    {o:'v', x:256, a:288, b:330, dir:-1},   // habitación 101
+    {o:'v', x:256, a:350, b:392, dir:-1},   // cocina
+    {o:'h', y:270, a:380, b:422, dir:-1},   // vestuario
+    {o:'h', y:270, a:452, b:496, dir:-1},   // habitación 102
+    {o:'h', y:420, a:290, b:332, dir:1},    // baño
+    {o:'h', y:337, a:450, b:494, dir:1},    // cuarto técnico
+    {o:'v', x:618, a:285, b:330, hueco:true}, // paso con escalón entre recepción y pasillo
+    {o:'h', y:20,  a:770, b:840, dir:1}     // entrada (puerta de cristal)
+  ];
+  var MUEBLES =
+    // habitación 101
+    '<rect class="mueble" x="40" y="40" width="120" height="150" rx="4"/><rect class="mueble" x="52" y="50" width="96" height="30" rx="6"/><rect class="mueble" x="170" y="40" width="34" height="34"/>' +
+    // almacén: estanterías
+    '<rect class="mueble" x="268" y="34" width="154" height="34"/><line class="mueble" x1="319" y1="34" x2="319" y2="68"/><line class="mueble" x1="370" y1="34" x2="370" y2="68"/><rect class="mueble" x="268" y="100" width="34" height="96"/>' +
+    // habitación 102
+    '<rect class="mueble" x="494" y="36" width="108" height="140" rx="4"/><rect class="mueble" x="504" y="46" width="88" height="30" rx="6"/><rect class="mueble" x="448" y="36" width="34" height="34"/>' +
+    // recepción: armarios, mostrador, silla
+    '<rect class="mueble" x="628" y="40" width="34" height="220"/><line class="mueble" x1="628" y1="95" x2="662" y2="95"/><line class="mueble" x1="628" y1="150" x2="662" y2="150"/><line class="mueble" x1="628" y1="205" x2="662" y2="205"/>' +
+    '<rect class="mueble" x="700" y="300" width="150" height="26" rx="2"/><rect class="mueble" x="760" y="306" width="30" height="14"/><circle class="mueble" cx="775" cy="368" r="13"/>' +
+    // cocina: nevera, mesa, encimera
+    '<rect class="mueble" x="34" y="352" width="46" height="52" rx="3"/><rect class="mueble" x="110" y="420" width="90" height="54" rx="6"/><rect class="mueble" x="34" y="540" width="210" height="26" rx="2"/><circle class="mueble" cx="64" cy="553" r="8"/><circle class="mueble" cx="94" cy="553" r="8"/>' +
+    // baño
+    '<ellipse class="mueble" cx="290" cy="540" rx="17" ry="21"/><rect class="mueble" x="270" y="562" width="40" height="12" rx="2"/><rect class="mueble" x="326" y="554" width="44" height="20" rx="5"/><rect class="mueble" x="380" y="500" width="46" height="72"/><line class="mueble" x1="380" y1="500" x2="426" y2="572"/>' +
+    // cuarto técnico: armario de red
+    '<rect class="mueble" x="548" y="486" width="58" height="84"/><line class="mueble" x1="548" y1="508" x2="606" y2="508"/><line class="mueble" x1="548" y1="530" x2="606" y2="530"/><line class="mueble" x1="548" y1="552" x2="606" y2="552"/>';
+
+  function puntos(pts){ return pts.map(function(p){ return p[0]+','+p[1]; }).join(' '); }
+  function puerta(p){
+    var w = p.b - p.a, out = '';
+    if (p.o === 'h'){
+      out += '<line class="hueco-puerta" x1="'+p.a+'" y1="'+p.y+'" x2="'+p.b+'" y2="'+p.y+'"/>';
+      if (p.hueco) return out;
+      var yb = p.y + p.dir * w;
+      out += '<line class="hoja" x1="'+p.a+'" y1="'+p.y+'" x2="'+p.a+'" y2="'+yb+'"/>' +
+             '<path class="arco" d="M'+p.b+' '+p.y+' A'+w+' '+w+' 0 0 '+(p.dir > 0 ? 1 : 0)+' '+p.a+' '+yb+'"/>';
+    } else {
+      out += '<line class="hueco-puerta" x1="'+p.x+'" y1="'+p.a+'" x2="'+p.x+'" y2="'+p.b+'"/>';
+      if (p.hueco) return out;
+      var xb = p.x + p.dir * w;
+      out += '<line class="hoja" x1="'+p.x+'" y1="'+p.a+'" x2="'+xb+'" y2="'+p.a+'"/>' +
+             '<path class="arco" d="M'+p.x+' '+p.b+' A'+w+' '+w+' 0 0 '+(p.dir < 0 ? 1 : 0)+' '+xb+' '+p.a+'"/>';
+    }
+    return out;
+  }
+
+  function dibujarPlano(svg, modo){
+    var interactivo = modo === 'riesgos';
+    var html = '';
+    SALAS.forEach(function(s){
+      var pts = puntos(s.pts);
+      if (interactivo){
+        html += '<g class="room" data-zona="'+s.zona+'" tabindex="0" role="button" aria-label="'+s.nombre+'">' +
+                '<polygon class="room-fill" points="'+pts+'"/>' +
+                '<polygon class="anillo" points="'+pts+'"/></g>';
+      } else {
+        var relleno = '#fff';
+        if (s.zona === 'habitaciones' || s.id === 'bano') relleno = 'url(#prohibido)';
+        if (s.zona === 'pasillo') relleno = '#ffe8df';
+        html += '<polygon points="'+pts+'" fill="'+relleno+'"/>';
+      }
+    });
+    html += '<g style="pointer-events:none">' + MUEBLES;
+    SALAS.forEach(function(s){ html += '<polygon class="muro" points="'+puntos(s.pts)+'"/>'; });
+    html += '<polygon class="muro-ext" points="'+puntos(EXTERIOR)+'"/>';
+    PUERTAS.forEach(function(p){ html += puerta(p); });
+    html += '<text class="entrada" x="805" y="2" text-anchor="middle">Entrada</text>';
+    SALAS.forEach(function(s){
+      html += '<text class="rotulo" x="'+s.rot[0]+'" y="'+s.rot[1]+'">'+s.nombre+'</text>';
+    });
+
+    if (modo === 'camaras'){
+      var estados = {hab1:'Nunca', hab2:'Nunca', vest:'No hace falta', bano:'Nunca', pasillo:'Sí, con cartel', recep:'Solo la entrada', cocina:'No hace falta', tec:'Solo sensores'};
+      SALAS.forEach(function(s){
+        html += '<text class="estado" x="'+s.rot[0]+'" y="'+(s.rot[1]+21)+'">'+estados[s.id]+'</text>';
+      });
+      // Zonas grabadas
+      html += '<path d="M600 300 L380 278 L380 332 Z" fill="#ff4f1a" opacity=".22"/>' +
+              '<path d="M700 68 L860 30 L860 120 Z" fill="#ff4f1a" opacity=".22"/>';
+      // Cámaras
+      html += '<use href="#camara" x="-640" y="292" width="34" height="16" transform="scale(-1,1)"/>' +
+              '<use href="#camara" x="666" y="60" width="34" height="16"/>';
+      // Sensores
+      html += '<use href="#sensor" x="212" y="436" width="24" height="24"/>' +
+              '<use href="#sensor" x="45" y="412" width="24" height="24"/>' +
+              '<use href="#sensor" x="540" y="302" width="24" height="24"/>' +
+              '<use href="#sensor" x="820" y="190" width="24" height="24"/>' +
+              '<use href="#sensor" x="846" y="30" width="24" height="24"/>' +
+              '<use href="#sensor" x="320" y="500" width="24" height="24"/>' +
+              '<use href="#sensor" x="470" y="500" width="24" height="24"/>';
+    }
+
+    if (modo === 'riesgos'){
+      html +=
+        '<text class="nota" x="684" y="246" style="animation-delay:.5s">¿contraseña</text>' +
+        '<text class="nota" x="684" y="274" style="animation-delay:.5s">en un pósit?</text>' +
+        '<path class="trazo" d="M818 260 C 846 262 852 282 836 296" style="animation-delay:.35s"/>' +
+        '<text class="nota" x="690" y="126" style="animation-delay:.8s">¿la pantalla se ve</text>' +
+        '<text class="nota" x="690" y="154" style="animation-delay:.8s">desde la puerta?</text>' +
+        '<text class="nota" x="40" y="232" style="animation-delay:1.1s">¿wifi</text>' +
+        '<text class="nota" x="40" y="260" style="animation-delay:1.1s">compartida?</text>' +
+        '<text class="nota" x="270" y="160" style="animation-delay:1.4s">¿llave maestra</text>' +
+        '<text class="nota" x="270" y="188" style="animation-delay:1.4s">a la vista?</text>' +
+        '<text class="nota" x="268" y="530" style="animation-delay:1.55s">nunca</text>' +
+        '<text class="nota" x="440" y="312" style="animation-delay:1.7s">cámaras: aquí sí</text>' +
+        '<text class="nota" x="448" y="452" style="animation-delay:2s">¿cerrado</text>' +
+        '<text class="nota" x="448" y="480" style="animation-delay:2s">con llave?</text>' +
+        '<text class="nota" x="34" y="516" style="animation-delay:2.3s">¿detector de humo?</text>';
+    }
+    html += '</g>';
+    svg.innerHTML = html;
+  }
+
+  // ---------- Plano interactivo ----------
+  var svgHotel = document.getElementById('plano-hotel');
+  var panel = document.getElementById('panel');
+  var btnInternet = document.getElementById('btn-internet');
+  dibujarPlano(svgHotel, 'riesgos');
+  dibujarPlano(document.getElementById('plano-camaras'), 'camaras');
+
+  function lista(items, clase){
+    return '<ul class="'+clase+'">' + items.map(function(t){ return '<li>'+t+'</li>'; }).join('') + '</ul>';
+  }
+  function seleccionar(zona){
+    var z = ZONAS[zona];
+    svgHotel.querySelectorAll('.room').forEach(function(g){
+      var activa = g.getAttribute('data-zona') === zona;
+      g.classList.toggle('activa', activa);
+      g.setAttribute('aria-pressed', activa ? 'true' : 'false');
+    });
+    btnInternet.setAttribute('aria-pressed', zona === 'internet' ? 'true' : 'false');
+    panel.innerHTML =
+      '<h3>'+z.nombre+'</h3>' +
+      '<p class="que-hay">'+z.hay+'</p>' +
+      '<h4>Qué puede pasar</h4>' + lista(z.riesgos, 'riesgos') +
+      '<h4>Qué haríamos</h4>' + lista(z.hacemos, 'hacemos');
+  }
+  svgHotel.querySelectorAll('.room').forEach(function(g){
+    g.addEventListener('click', function(){ seleccionar(g.getAttribute('data-zona')); });
+    g.addEventListener('keydown', function(e){
+      if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); seleccionar(g.getAttribute('data-zona')); }
+    });
+  });
+  btnInternet.addEventListener('click', function(){ seleccionar('internet'); });
+  seleccionar('recepcion');
+
+  // ---------- Autodiagnóstico ----------
+  var PREGUNTAS = [
+    {g:'Hardware', t:'¿La wifi de los clientes está separada de la que usa recepción?', f:'Separar la wifi en tres redes: clientes, hotel y cámaras.'},
+    {g:'Hardware', t:'¿Habéis cambiado la contraseña que traía el router de fábrica?', f:'Cambiar la contraseña del router y activar su protección más actual.'},
+    {g:'Hardware', t:'Si se va la luz o internet, ¿recepción puede seguir trabajando?', f:'Instalar una batería para los cortes de luz y un internet de reserva.'},
+    {g:'Hardware', t:'¿Las pantallas se bloquean cuando alguien se levanta del puesto?', f:'Activar el bloqueo automático de pantalla en todos los equipos.'},
+    {g:'Software', t:'¿Los ordenadores y móviles del hotel se actualizan solos?', f:'Activar las actualizaciones automáticas, también en router y cámaras.'},
+    {g:'Software', t:'¿Cada persona entra con su propio usuario y contraseña?', f:'Un usuario por persona y un gestor de contraseñas para el equipo.'},
+    {g:'Software', t:'Para entrar en el correo o en Booking, ¿se pide un código además de la contraseña?', f:'Activar el código en el móvil en correo, Booking, redes y banco.'},
+    {g:'Software', t:'¿Todos los ordenadores tienen antivirus activo?', f:'Instalar y mantener un antivirus en cada ordenador.'},
+    {g:'Datos', t:'¿Hacéis copias de seguridad y al menos una está desconectada de internet?', f:'Copias en la nube y en un disco desconectado, comprobadas cada mes.'},
+    {g:'Datos', t:'¿Los DNI de los clientes se guardan sin fotocopias y fuera de la vista?', f:'Nada de fotocopias: el registro de viajeros, solo en el sistema.'},
+    {g:'Datos', t:'¿Pedís permiso escrito a los padres antes de publicar fotos con niños?', f:'Fotos sin caras de menores salvo autorización escrita.'},
+    {g:'Equipo', t:'¿Todo el personal ha recibido formación en ciberseguridad?', f:'Vídeo de bienvenida, fichas por área y un simulacro cada tres meses.'}
+  ];
+  var cont = document.getElementById('preguntas');
+  var html = '', grupoActual = '';
+  PREGUNTAS.forEach(function(p, i){
+    if (p.g !== grupoActual){
+      if (grupoActual) html += '</div>';
+      html += '<div class="grupo"><h3>'+p.g+'</h3>';
+      grupoActual = p.g;
+    }
+    var n = 'p'+i;
+    html += '<div class="pregunta"><p id="t'+n+'">'+p.t+'</p>' +
+      '<div class="opciones" role="radiogroup" aria-labelledby="t'+n+'">' +
+      '<input type="radio" name="'+n+'" id="'+n+'s" value="si"><label for="'+n+'s">Sí</label>' +
+      '<input type="radio" name="'+n+'" id="'+n+'n" value="no"><label for="'+n+'n">No</label>' +
+      '<input type="radio" name="'+n+'" id="'+n+'x" value="nose"><label for="'+n+'x">No lo sé</label>' +
+      '</div></div>';
+  });
+  html += '</div>';
+  cont.innerHTML = html;
+
+  var form = document.getElementById('test');
+  var contador = document.getElementById('contador');
+  var resultado = document.getElementById('resultado');
+
+  function respuestas(){
+    return PREGUNTAS.map(function(p, i){
+      var marcada = form.querySelector('input[name="p'+i+'"]:checked');
+      return marcada ? marcada.value : null;
+    });
+  }
+  form.addEventListener('change', function(){
+    var r = respuestas().filter(function(v){ return v !== null; }).length;
+    contador.textContent = r + ' de ' + PREGUNTAS.length + ' respondidas';
+  });
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var r = respuestas();
+    var si = r.filter(function(v){ return v === 'si'; }).length;
+    var pendientes = PREGUNTAS.filter(function(p, i){ return r[i] !== 'si'; });
+    var titulo, texto;
+    if (si >= 10){ titulo = 'Vais bien'; texto = 'Quedan pocos detalles. Los revisaríamos en una visita y lo dejaríamos todo por escrito.'; }
+    else if (si >= 6){ titulo = 'Hay huecos importantes'; texto = 'Lo básico está, pero hay puertas abiertas. Estas son las que cerraríamos primero:'; }
+    else { titulo = 'El hotel está expuesto'; texto = 'Ahora mismo, un solo correo falso podría parar el hotel. Esto es lo primero que haríamos:'; }
+    var cuadros = r.map(function(v){ return '<span class="'+(v === 'si' ? 'si' : '')+'"></span>'; }).join('');
+    var sinResponder = r.filter(function(v){ return v === null; }).length;
+    resultado.innerHTML =
+      '<h3>'+titulo+'</h3>' +
+      '<div class="medidor" aria-hidden="true">'+cuadros+'</div>' +
+      '<p class="medidor-txt">'+si+' de '+PREGUNTAS.length+' medidas ya están en marcha' + (sinResponder ? ' ('+sinResponder+' sin responder cuentan como pendientes)' : '') + '.</p>' +
+      '<p>'+texto+'</p>' +
+      (pendientes.length ? '<ol class="arreglos">' + pendientes.map(function(p){ return '<li>'+p.f+'</li>'; }).join('') + '</ol>' : '') +
+      '<p style="margin:28px 0 0"><a class="btn btn-principal" href="#contratar">Pedir una revisión del hotel</a></p>';
+    resultado.hidden = false;
+    resultado.focus();
+  });
+  document.getElementById('reiniciar').addEventListener('click', function(){
+    form.reset();
+    resultado.hidden = true;
+    contador.textContent = '0 de ' + PREGUNTAS.length + ' respondidas';
+  });
+})();
+
+// ---------- Vídeo y material de formación ----------
+(function(){
+  var v = document.getElementById('videoFormacion'), play = document.getElementById('videoPlay');
+  if (!v) return;
+  var caps = [].slice.call(document.querySelectorAll('.cap'));
+  play.addEventListener('click', function(){ v.play(); });
+  v.addEventListener('play', function(){ play.hidden = true; });
+  caps.forEach(function(b){
+    b.addEventListener('click', function(){ v.currentTime = parseFloat(b.dataset.t); v.play(); v.scrollIntoView({behavior: 'smooth', block: 'center'}); });
+  });
+  v.addEventListener('timeupdate', function(){
+    var t = v.currentTime, act = null;
+    caps.forEach(function(b){ if (t >= parseFloat(b.dataset.t) - .01) act = b; });
+    caps.forEach(function(b){ b.classList.toggle('activo', b === act && !v.paused); });
+  });
+  v.addEventListener('pause', function(){ caps.forEach(function(b){ b.classList.remove('activo'); }); });
+
+  var visor = document.getElementById('visor'), img = document.getElementById('visorImg'), tit = document.getElementById('visorTitulo'), pdf = document.getElementById('visorPdf');
+  var piezas = [].slice.call(document.querySelectorAll('.cartel-img, .ficha .ficha-ver')), actual = 0;
+  function abrir(i){
+    actual = (i + piezas.length) % piezas.length;
+    var b = piezas[actual];
+    img.src = b.dataset.img; img.alt = b.dataset.titulo; tit.textContent = b.dataset.titulo; pdf.href = b.dataset.pdf;
+    if (typeof visor.showModal === 'function') { if (!visor.open) visor.showModal(); } else { window.open(b.dataset.pdf); }
+  }
+  piezas.forEach(function(b, i){ b.addEventListener('click', function(){ abrir(i); }); });
+  [].slice.call(document.querySelectorAll('.ficha-ver-txt')).forEach(function(b){
+    b.addEventListener('click', function(){ abrir(piezas.indexOf(b.closest('.ficha').querySelector('.ficha-ver'))); });
+  });
+  document.querySelector('.ficha-ver-alt').addEventListener('click', function(){ abrir(0); });
+  document.getElementById('visorAnt').addEventListener('click', function(){ abrir(actual - 1); });
+  document.getElementById('visorSig').addEventListener('click', function(){ abrir(actual + 1); });
+  document.getElementById('visorCerrar').addEventListener('click', function(){ visor.close(); });
+  visor.addEventListener('click', function(e){ if (e.target === visor) visor.close(); });
+  visor.addEventListener('keydown', function(e){ if (e.key === 'ArrowRight') abrir(actual + 1); if (e.key === 'ArrowLeft') abrir(actual - 1); });
+})();
+</script>
+</body>
+</html>
